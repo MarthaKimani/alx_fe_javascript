@@ -5,27 +5,28 @@ const quotes = [
   { text: "Don’t let yesterday take up too much of today.", category: "Inspiration" }
 ];
 
-// Function to display a random quote
-function displayRandomQuote() {
+// Function to show a random quote
+function showRandomQuote() {
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const randomQuote = quotes[randomIndex];
 
-  document.getElementById("quoteText").textContent = randomQuote.text;
-  document.getElementById("quoteCategory").textContent = `Category: ${randomQuote.category}`;
+  // Use innerHTML as required
+  document.getElementById("quoteText").innerHTML = randomQuote.text;
+  document.getElementById("quoteCategory").innerHTML = "Category: " + randomQuote.category;
 }
 
 // Function to add a new quote
 function addQuote(text, category) {
   if (text && category) {
     quotes.push({ text, category });
-    displayRandomQuote();
+    showRandomQuote();
   } else {
     alert("Please enter both quote text and category");
   }
 }
 
 // Event listener for "Show New Quote" button
-document.getElementById("newQuoteBtn").addEventListener("click", displayRandomQuote);
+document.getElementById("newQuoteBtn").addEventListener("click", showRandomQuote);
 
 // Event listener for "Add Quote" button
 document.getElementById("addQuoteBtn").addEventListener("click", () => {
