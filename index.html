@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dynamic Quote Generator</title>
+  <title>Random Quote Generator</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Dynamic Quote Generator</h1>
-  
+  <h1>Random Quote Generator</h1>
+
   <!-- Display Area -->
-  <div id="quoteDisplay"></div>
-  <button id="newQuote">Show New Quote</button>
+  <div id="quoteBox">
+    <p id="quoteText">Click the button to see a quote</p>
+    <p id="quoteCategory"></p>
+  </div>
+
+  <button id="newQuoteBtn">Show New Quote</button>
 
   <!-- Add Quote Section -->
   <div>
@@ -23,3 +28,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+

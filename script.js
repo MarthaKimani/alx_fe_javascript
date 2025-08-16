@@ -1,60 +1,41 @@
-// Initial quotes
-let quotes = [
+// Quotes array with objects (text + category)
+const quotes = [
   { text: "The best way to get started is to quit talking and begin doing.", category: "Motivation" },
-  { text: "Don’t let yesterday take up too much of today.", category: "Life" },
-  { text: "It’s not whether you get knocked down, it’s whether you get up.", category: "Inspiration" }
+  { text: "Life is what happens when you're busy making other plans.", category: "Life" },
+  { text: "Don’t let yesterday take up too much of today.", category: "Inspiration" }
 ];
 
-// DOM references
-const quoteDisplay = document.getElementById("quoteDisplay");
-const newQuoteBtn = document.getElementById("newQuote");
-const addQuoteBtn = document.getElementById("addQuoteBtn");
-
-// Function to show random quote
-function showRandomQuote() {
+// Function to display a random quote
+function displayRandomQuote() {
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const randomQuote = quotes[randomIndex];
 
-  // Clear old content
-  quoteDisplay.innerHTML = "";
-
-  // Create new elements dynamically
-  const quoteText = document.createElement("p");
-  quoteText.textContent = `"${randomQuote.text}"`;
-
-  const quoteCategory = document.createElement("small");
-  quoteCategory.textContent = `— ${randomQuote.category}`;
-
-  // Append to display
-  quoteDisplay.appendChild(quoteText);
-  quoteDisplay.appendChild(quoteCategory);
+  document.getElementById("quoteText").textContent = randomQuote.text;
+  document.getElementById("quoteCategory").textContent = `Category: ${randomQuote.category}`;
 }
 
-// Function to add a new quote dynamically
-function addQuote() {
-  const textInput = document.getElementById("newQuoteText");
-  const categoryInput = document.getElementById("newQuoteCategory");
-
-  const newText = textInput.value.trim();
-  const newCategory = categoryInput.value.trim();
-
-  if (newText && newCategory) {
-    // Update quotes array
-    quotes.push({ text: newText, category: newCategory });
-
-    // Clear fields
-    textInput.value = "";
-    categoryInput.value = "";
-
-    alert("New quote added successfully!");
+// Function to add a new quote
+function addQuote(text, category) {
+  if (text && category) {
+    quotes.push({ text, category });
+    displayRandomQuote();
   } else {
-    alert("Please enter both a quote and category.");
+    alert("Please enter both quote text and category");
   }
 }
 
-// Event listeners
-newQuoteBtn.addEventListener("click", showRandomQuote);
-addQuoteBtn.addEventListener("click", addQuote);
+// Event listener for "Show New Quote" button
+document.getElementById("newQuoteBtn").addEventListener("click", displayRandomQuote);
 
-// Show first quote on load
-showRandomQuote();
+// Event listener for "Add Quote" button
+document.getElementById("addQuoteBtn").addEventListener("click", () => {
+  const text = document.getElementById("newQuoteText").value;
+  const category = document.getElementById("newQuoteCategory").value;
+
+  addQuote(text, category);
+
+  // Clear inputs after adding
+  document.getElementById("newQuoteText").value = "";
+  document.getElementById("newQuoteCategory").value = "";
+});
+
