@@ -171,8 +171,6 @@ function addQuote() {
   populateCategories();
   displayRandomQuote();
 }
-
-
   quotes.push({ text: newText, category: newCategory });
   saveQuotes();
 
@@ -274,7 +272,7 @@ function setStatus(message, isError = false) {
     showRandomQuote();
   });
 document.getElementById("fetchQuotes").addEventListener("click", fetchQuotesFromServer);
-
+document.getElementById("syncQuotesBtn").addEventListener("click", syncQuotes);
   // Prefer session's last viewed quote if available
   const last = getLastViewed();
   if (last && last.text && last.category) {
@@ -481,3 +479,25 @@ async function fetchQuotesFromServer() {
   }
 }
 
+// Function to sync all local quotes to the server
+async function syncQuotes() {
+  try {
+    for (const q of quotes) {
+      const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(q)
+      });
+
+      const data = await response.json();
+      console.log("Synced quote:", data);
+    }
+
+    setStatus("All quotes synced to server!");
+  } catch (err) {
+    console.error("Sync failed:", err);
+    setStatus("Failed to sync quotes to server.", true);
+  }
+}
