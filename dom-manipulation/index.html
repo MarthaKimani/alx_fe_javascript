@@ -1,31 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Random Quote Generator</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dynamic Quote Generator</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.5; padding: 24px; max-width: 800px; margin: auto; }
+    h1 { margin-bottom: 8px; }
+    #quoteBox { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin: 16px 0; }
+    #quoteText { font-size: 1.15rem; font-style: italic; margin: 0; }
+    #quoteMeta { opacity: 0.7; margin-top: 8px; font-size: 0.95rem; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin: 8px 0; }
+    input[type="text"] { padding: 10px; border-radius: 8px; border: 1px solid #ccc; min-width: 260px; }
+    button { padding: 10px 14px; border: none; border-radius: 10px; cursor: pointer; }
+    button.primary { background: #222; color: #fff; }
+    button.ghost { background: #f2f2f2; }
+    #status { margin-top: 8px; min-height: 20px; opacity: 0.9; }
+    small.hint { display: block; opacity: .7; margin-top: 4px;}
+    .divider { height: 1px; background: #eee; margin: 20px 0; }
+  </style>
 </head>
 <body>
-  <h1>Random Quote Generator</h1>
+  <h1>Dynamic Quote Generator</h1>
+  <small class="hint">Quotes persist with <strong>Local Storage</strong>. Your last viewed quote this session uses <strong>Session Storage</strong>.</small>
 
-  <!-- Display Area -->
+  <!-- Quote box -->
   <div id="quoteBox">
-    <p id="quoteText">Click the button to see a quote</p>
-    <p id="quoteCategory"></p>
+    <p id="quoteText">Loading…</p>
+    <div id="quoteMeta"></div>
   </div>
 
-  <button id="newQuoteBtn">Show New Quote</button>
+  <!-- Actions -->
+  <div class="row">
+    <button id="newQuote" class="primary" title="Show a random quote">Show New Quote</button>
+    <button id="exportJson" class="ghost" title="Export quotes to a JSON file">Export JSON</button>
+    <label class="ghost" style="padding: 8px 12px; border-radius: 10px; background:#f9f9f9; cursor:pointer;">
+      Import JSON
+      <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" style="display:none;">
+    </label>
+    <button id="clearStorage" class="ghost" title="(Testing) Clear saved data">Clear Storage</button>
+  </div>
+  <div id="status" aria-live="polite"></div>
 
-  <!-- Add Quote Section -->
-  <div>
+  <div class="divider"></div>
+
+  <!-- Add new quote -->
+  <h2>Add a New Quote</h2>
+  <div class="row">
     <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
     <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-    <button id="addQuoteBtn">Add Quote</button>
+    <button id="addQuoteBtn" class="primary" onclick="addQuote()">Add Quote</button>
   </div>
+  <small class="hint">Tip: Try adding a quote, reload the page, and notice it persists.</small>
 
-  <!-- Script -->
   <script src="script.js"></script>
 </body>
 </html>
-
