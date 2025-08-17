@@ -27,6 +27,28 @@ const DEFAULT_QUOTES = [
 let quotes = [];
 
 /* ---------- Storage Helpers ---------- */
+// Function to display a random quote
+function displayRandomQuote() {
+  if (quotes.length === 0) {
+    document.getElementById("quoteDisplay").innerHTML = "No quotes available. Please add one!";
+    return;
+  }
+
+  const randomIndex = Math.floor(Math.random() * quotes.length);
+  const randomQuote = quotes[randomIndex];
+
+  // Update DOM with innerHTML
+  document.getElementById("quoteDisplay").innerHTML = `
+    <p>"${randomQuote.text}"</p>
+    <small>Category: ${randomQuote.category}</small>
+  `;
+
+  // Save last viewed in session storage
+  sessionStorage.setItem("lastViewedQuote", JSON.stringify(randomQuote));
+}
+document.getElementById("newQuote").addEventListener("click", displayRandomQuote);
+displayRandomQuote();
+
 function loadQuotes() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);

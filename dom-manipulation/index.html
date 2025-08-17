@@ -32,18 +32,14 @@
 
   <!-- Actions -->
   <div class="row">
-    <button id="newQuote" class="primary" title="Show a random quote">Show New Quote</button>
-    <button id="exportJson" class="ghost" title="Export quotes to a JSON file">Export JSON</button>
-    <label class="ghost" style="padding: 8px 12px; border-radius: 10px; background:#f9f9f9; cursor:pointer;">
-      Import JSON
-      <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" style="display:none;">
-    </label>
-    <button id="clearStorage" class="ghost" title="(Testing) Clear saved data">Clear Storage</button>
-  </div>
-  <div id="status" aria-live="polite"></div>
-
-  <div class="divider"></div>
-
+  <button id="newQuote" class="primary" title="Show a random quote">Show New Quote</button>
+  <button id="exportJson" class="ghost" title="Export quotes to a JSON file">Export Quotes</button>
+  <label class="ghost" style="padding: 8px 12px; border-radius: 10px; background:#f9f9f9; cursor:pointer;">
+    Import JSON
+    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" style="display:none;">
+  </label>
+  <button id="clearStorage" class="ghost" title="(Testing) Clear saved data">Clear Storage</button>
+</div>
   <!-- Add new quote -->
   <h2>Add a New Quote</h2>
   <div class="row">
