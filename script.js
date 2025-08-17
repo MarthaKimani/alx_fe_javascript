@@ -5,8 +5,8 @@ const quotes = [
   { text: "Don’t let yesterday take up too much of today.", category: "Inspiration" }
 ];
 
-// Function to show a random quote
-function showRandomQuote() {
+// Function to random quote
+function showRandomQuote () {
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const randomQuote = quotes[randomIndex];
 
