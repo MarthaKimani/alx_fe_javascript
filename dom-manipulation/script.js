@@ -360,3 +360,40 @@ function displayRandomQuote() {
 
   sessionStorage.setItem("lastViewedQuote", JSON.stringify(randomQuote));
 }
+// Function to fetch quotes from a "server" (simulated with a local JSON file or API)
+async function fetchQuotesFromServer() {
+  try {
+    // Example: could be "quotes.json" in the same directory or a placeholder API
+    const response = await fetch("quotes.json");
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+
+    // Validate and sanitize before adding
+    const importedQuotes = sanitizeQuotes(data);
+
+    // Merge with existing quotes (avoid duplicates)
+    const existingKeys = new Set(quotes.map(q => `${q.text.toLowerCase()}||${q.category.toLowerCase()}`));
+    let added = 0;
+    for (const q of importedQuotes) {
+      const key = `${q.text.toLowerCase()}||${q.category.toLowerCase()}`;
+      if (!existingKeys.has(key)) {
+        quotes.push(q);
+        existingKeys.add(key);
+        added++;
+      }
+    }
+
+    saveQuotes();
+    populateCategories();
+    setStatus(`Fetched ${added} new quotes from server.`);
+    if (added > 0) displayRandomQuote();
+
+  } catch (error) {
+    console.error("Fetch error:", error);
+    setStatus("Failed to fetch quotes from server.", true);
+  }
+}
+
