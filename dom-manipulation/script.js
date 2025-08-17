@@ -230,6 +230,7 @@ function setStatus(message, isError = false) {
     setStatus('Local & session storage cleared. Restored default quotes.');
     showRandomQuote();
   });
+document.getElementById("fetchQuotes").addEventListener("click", fetchQuotesFromServer);
 
   // Prefer session's last viewed quote if available
   const last = getLastViewed();
@@ -378,6 +379,46 @@ async function fetchQuotesFromServer() {
     const existingKeys = new Set(quotes.map(q => `${q.text.toLowerCase()}||${q.category.toLowerCase()}`));
     let added = 0;
     for (const q of importedQuotes) {
+      const key = `${q.text.toLowerCase()}||${q.category.toLowerCase()}`;
+      if (!existingKeys.has(key)) {
+        quotes.push(q);
+        existingKeys.add(key);
+        added++;
+      }
+    }
+
+    saveQuotes();
+    populateCategories();
+    setStatus(`Fetched ${added} new quotes from server.`);
+    if (added > 0) displayRandomQuote();
+
+  } catch (error) {
+    console.error("Fetch error:", error);
+    setStatus("Failed to fetch quotes from server.", true);
+  }
+}
+// Function to fetch quotes from a server (using JSONPlaceholder API)
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+
+    // Map posts into our { text, category } format
+    const importedQuotes = data.map(post => ({
+      text: post.title,
+      category: `User ${post.userId}`
+    }));
+
+    // Sanitize and merge with existing quotes
+    const cleaned = sanitizeQuotes(importedQuotes);
+    const existingKeys = new Set(quotes.map(q => `${q.text.toLowerCase()}||${q.category.toLowerCase()}`));
+
+    let added = 0;
+    for (const q of cleaned) {
       const key = `${q.text.toLowerCase()}||${q.category.toLowerCase()}`;
       if (!existingKeys.has(key)) {
         quotes.push(q);
