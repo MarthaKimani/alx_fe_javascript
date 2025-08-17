@@ -114,59 +114,27 @@ function showRandomQuote() {
 }
 
 function addQuote() {
-  const text = (els.inputText.value || '').trim();
-  const category = (els.inputCategory.value || '').trim();
+  const textInput = document.getElementById("newQuoteText");
+  const categoryInput = document.getElementById("newQuoteCategory");
 
-  if (!text || !category) {
-    setStatus('Please enter both a quote and a category.', true);
-    return;
-  }
-  // Function to dynamically create the "Add Quote" form
-function createAddQuoteForm() {
-  const formContainer = document.createElement("div");
+  const newText = textInput.value.trim();
+  const newCategory = categoryInput.value.trim();
 
-  // Input for quote text
-  const inputText = document.createElement("input");
-  inputText.type = "text";
-  inputText.id = "newQuoteText";
-  inputText.placeholder = "Enter a new quote";
-
-  // Input for category
-  const inputCategory = document.createElement("input");
-  inputCategory.type = "text";
-  inputCategory.id = "newQuoteCategory";
-  inputCategory.placeholder = "Enter quote category";
-
-  // Add button
-  const addBtn = document.createElement("button");
-  addBtn.textContent = "Add Quote";
-  addBtn.addEventListener("click", addQuote);
-
-  // Append everything into the container
-  formContainer.appendChild(inputText);
-  formContainer.appendChild(inputCategory);
-  formContainer.appendChild(addBtn);
-
-  // Attach form to the body (or a target div)
-  document.body.appendChild(formContainer);
-}
-
-
-  // Avoid exact duplicates (text+category)
-  const key = `${text.toLowerCase()}||${category.toLowerCase()}`;
-  const exists = new Set(quotes.map(q => `${q.text.toLowerCase()}||${q.category.toLowerCase()}`));
-  if (exists.has(key)) {
-    setStatus('That exact quote already exists.', true);
+  if (newText === "" || newCategory === "") {
+    alert("Please enter both a quote and a category.");
     return;
   }
 
-  quotes.push({ text, category });
+  quotes.push({ text: newText, category: newCategory });
   saveQuotes();
 
-  els.inputText.value = '';
-  els.inputCategory.value = '';
-  setStatus('New quote added successfully!');
-  showRandomQuote();
+  alert("New quote added successfully!");
+  textInput.value = "";
+  categoryInput.value = "";
+
+  // Update dropdown with new category if needed
+  populateCategories();
+  displayRandomQuote();
 }
 
 function exportToJson() {
@@ -266,6 +234,47 @@ function setStatus(message, isError = false) {
     showRandomQuote();
   }
 })();
+
+// Function to populate categories dynamically in the dropdown
+function populateCategories() {
+  const categoryFilter = document.getElementById("categoryFilter");
+
+  // Clear old options except "All"
+  categoryFilter.innerHTML = `<option value="all">All Categories</option>`;
+
+  // Extract unique categories from quotes
+  const categories = [...new Set(quotes.map(q => q.category))];
+
+  categories.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    categoryFilter.appendChild(option);
+  });
+}
+
+// Modified displayRandomQuote to respect category filter
+function displayRandomQuote() {
+  const filter = document.getElementById("categoryFilter").value;
+
+  // Filtered list based on category
+  const filteredQuotes = filter === "all" ? quotes : quotes.filter(q => q.category === filter);
+
+  if (filteredQuotes.length === 0) {
+    document.getElementById("quoteDisplay").innerHTML = "No quotes available in this category.";
+    return;
+  }
+
+  const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+  const randomQuote = filteredQuotes[randomIndex];
+
+  document.getElementById("quoteDisplay").innerHTML = `
+    <p>"${randomQuote.text}"</p>
+    <small>Category: ${randomQuote.category}</small>
+  `;
+
+  sessionStorage.setItem("lastViewedQuote", JSON.stringify(randomQuote));
+}
 (function init() {
   loadQuotes();
 
@@ -276,12 +285,18 @@ function setStatus(message, isError = false) {
     sessionStorage.removeItem("lastViewedQuote");
     quotes = [...DEFAULT_QUOTES];
     saveQuotes();
+    populateCategories();
     displayRandomQuote();
   });
 
-  // Generate the Add Quote form dynamically
+  // Dynamically create Add Quote form
   createAddQuoteForm();
+
+  // Populate category dropdown
+  populateCategories();
+
+  // Handle category change
+  document.getElementById("categoryFilter").addEventListener("change", displayRandomQuote);
 
   displayRandomQuote();
 })();
-
