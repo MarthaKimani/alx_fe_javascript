@@ -271,6 +271,36 @@ function setStatus(message, isError = false) {
     setStatus('Local & session storage cleared. Restored default quotes.');
     showRandomQuote();
   });
+  (function init() {
+  loadQuotes();
+
+  document.getElementById("newQuote").addEventListener("click", displayRandomQuote);
+  document.getElementById("exportJson").addEventListener("click", exportToJson);
+  document.getElementById("clearStorage").addEventListener("click", () => {
+    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem("lastViewedQuote");
+    quotes = [...DEFAULT_QUOTES];
+    saveQuotes();
+    populateCategories();
+    displayRandomQuote();
+  });
+  document.getElementById("fetchQuotes").addEventListener("click", fetchQuotesFromServer);
+  document.getElementById("syncQuotesBtn").addEventListener("click", syncQuotes);
+
+  createAddQuoteForm();
+  populateCategories();
+
+  document.getElementById("categoryFilter").addEventListener("change", (e) => {
+    selectedCategory = e.target.value;
+    displayRandomQuote();
+  });
+
+  displayRandomQuote();
+})();
+
+// Auto-sync every 60s
+setInterval(syncQuotes, 60000);
+
 document.getElementById("fetchQuotes").addEventListener("click", fetchQuotesFromServer);
 document.getElementById("syncQuotesBtn").addEventListener("click", syncQuotes);
   // Prefer session's last viewed quote if available
@@ -501,3 +531,8 @@ async function syncQuotes() {
     setStatus("Failed to sync quotes to server.", true);
   }
 }
+// Automatically sync quotes every 60 seconds
+setInterval(() => {
+  syncQuotes();
+}, 60000); // 60000 ms = 1 minute
+
