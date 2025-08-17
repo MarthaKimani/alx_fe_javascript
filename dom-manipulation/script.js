@@ -129,6 +129,49 @@ function addQuote() {
     alert("Please enter both a quote and a category.");
     return;
   }
+  function addQuote() {
+  const textInput = document.getElementById("newQuoteText");
+  const categoryInput = document.getElementById("newQuoteCategory");
+
+  const newText = textInput.value.trim();
+  const newCategory = categoryInput.value.trim();
+
+  if (newText === "" || newCategory === "") {
+    alert("Please enter both a quote and a category.");
+    return;
+  }
+
+  const newQuote = { text: newText, category: newCategory };
+
+  // Save locally
+  quotes.push(newQuote);
+  saveQuotes();
+
+  // --- POST to server (demonstration only, JSONPlaceholder ignores but returns fake ID) ---
+  fetch("https://jsonplaceholder.typicode.com/posts", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(newQuote)
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log("Quote sent to server:", data);
+      setStatus("New quote added and sent to server!");
+    })
+    .catch(err => {
+      console.error("POST failed:", err);
+      setStatus("Quote saved locally, but failed to send to server.", true);
+    });
+
+  // Reset form and refresh
+  textInput.value = "";
+  categoryInput.value = "";
+  populateCategories();
+  displayRandomQuote();
+}
+
 
   quotes.push({ text: newText, category: newCategory });
   saveQuotes();
