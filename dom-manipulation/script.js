@@ -121,6 +121,36 @@ function addQuote() {
     setStatus('Please enter both a quote and a category.', true);
     return;
   }
+  // Function to dynamically create the "Add Quote" form
+function createAddQuoteForm() {
+  const formContainer = document.createElement("div");
+
+  // Input for quote text
+  const inputText = document.createElement("input");
+  inputText.type = "text";
+  inputText.id = "newQuoteText";
+  inputText.placeholder = "Enter a new quote";
+
+  // Input for category
+  const inputCategory = document.createElement("input");
+  inputCategory.type = "text";
+  inputCategory.id = "newQuoteCategory";
+  inputCategory.placeholder = "Enter quote category";
+
+  // Add button
+  const addBtn = document.createElement("button");
+  addBtn.textContent = "Add Quote";
+  addBtn.addEventListener("click", addQuote);
+
+  // Append everything into the container
+  formContainer.appendChild(inputText);
+  formContainer.appendChild(inputCategory);
+  formContainer.appendChild(addBtn);
+
+  // Attach form to the body (or a target div)
+  document.body.appendChild(formContainer);
+}
+
 
   // Avoid exact duplicates (text+category)
   const key = `${text.toLowerCase()}||${category.toLowerCase()}`;
@@ -236,3 +266,22 @@ function setStatus(message, isError = false) {
     showRandomQuote();
   }
 })();
+(function init() {
+  loadQuotes();
+
+  document.getElementById("newQuote").addEventListener("click", displayRandomQuote);
+  document.getElementById("exportJson").addEventListener("click", exportToJson);
+  document.getElementById("clearStorage").addEventListener("click", () => {
+    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem("lastViewedQuote");
+    quotes = [...DEFAULT_QUOTES];
+    saveQuotes();
+    displayRandomQuote();
+  });
+
+  // Generate the Add Quote form dynamically
+  createAddQuoteForm();
+
+  displayRandomQuote();
+})();
+
